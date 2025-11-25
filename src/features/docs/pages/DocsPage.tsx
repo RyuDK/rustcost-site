@@ -1,5 +1,4 @@
-﻿/* eslint-disable no-empty */
-/* eslint-disable @typescript-eslint/no-explicit-any */
+﻿/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useParams, Link } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -191,7 +190,6 @@ export default function DocsPage() {
     };
   }, [language, currentTopic]);
 
-  // Build table of contents
   const toc: TocItem[] = useMemo(() => {
     const lines = content.split("\n");
     const items: TocItem[] = [];
@@ -207,7 +205,6 @@ export default function DocsPage() {
     return items;
   }, [content]);
 
-  // Track active heading for TOC highlighting and handle ESC to close image preview
   useEffect(() => {
     const headings = Array.from(
       document.querySelectorAll("article h1, article h2, article h3")
@@ -242,14 +239,25 @@ export default function DocsPage() {
     }
   }, []);
 
+  const headingStyles: Record<string, string> = {
+    h1: "mt-12 mb-4 text-[32px] leading-[1.2] font-semibold text-gray-900 dark:text-gray-50",
+    h2: "mt-10 mb-3 text-[26px] leading-[1.3] font-semibold text-gray-900 dark:text-gray-50",
+    h3: "mt-8 mb-2.5 text-[21px] leading-[1.35] font-semibold text-gray-900 dark:text-gray-50",
+    h4: "mt-7 mb-2 text-[18px] leading-[1.4] font-semibold text-gray-900 dark:text-gray-50",
+  };
+
   const Heading =
     (tag: keyof JSX.IntrinsicElements) =>
-    ({ children, ...props }: any) => {
+    ({ children, className = "", ...props }: any) => {
       const text = String(children).replace(/<[^>]+>/g, "");
       const id = slugify(text);
       const T = tag as any;
       return (
-        <T id={id} className="group scroll-mt-28" {...props}>
+        <T
+          id={id}
+          className={`group scroll-mt-28 ${headingStyles[tag]} ${className}`}
+          {...props}
+        >
           {children}
           <a
             href={`#${id}`}
@@ -258,7 +266,7 @@ export default function DocsPage() {
               scrollToId(id);
             }}
             aria-label={`Link to ${text}`}
-            className="ml-2 align-middle inline-flex opacity-0 group-hover:opacity-100 text-gray-400 hover:text-amber-500 transition"
+            className="ml-2 inline-flex align-middle text-gray-400 transition hover:text-blue-600 dark:hover:text-amber-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:focus-visible:ring-amber-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-gray-900 opacity-0 group-hover:opacity-100"
           >
             <HashtagIcon className="h-4 w-4" />
           </a>
@@ -279,30 +287,29 @@ export default function DocsPage() {
         descriptionKey="seo.docs.description"
         descriptionDefault="Install guides, architecture notes, and docs for RustCost."
       />
-      {/* Mobile drawer trigger */}
       <div className="mb-4 flex items-center justify-between lg:hidden">
         <button
           onClick={() => setOpen(true)}
-          className="rounded-md border px-3 py-2 text-sm text-gray-700 dark:text-gray-200 dark:border-gray-700"
+          className="rounded-md border border-gray-200 px-3 py-2 text-sm font-medium text-gray-800 shadow-sm transition hover:border-blue-300 hover:bg-blue-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 dark:hover:border-amber-500/60 dark:hover:bg-amber-900/30"
         >
           Menu
         </button>
-        <div className="text-sm text-gray-500">Docs</div>
+        <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
+          Docs
+        </div>
       </div>
 
-      {/* Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-[260px_minmax(0,1fr)_220px] gap-6">
-        {/* Sidebar */}
-        <aside className="hidden lg:block sticky self-start top-24 h-[calc(100vh-7rem)] overflow-y-auto pr-2 select-none">
-          <nav className="space-y-2">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[250px_minmax(0,1fr)_220px]">
+        <aside className="sticky top-24 hidden h-[calc(100vh-7rem)] select-none overflow-y-auto pr-3 lg:block">
+          <nav className="space-y-1.5">
             {topics.map((t) => (
               <Link
                 key={t.slug}
                 to={buildDocPath(t.slug)}
-                className={`block rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                className={`flex items-center rounded-md border-l-2 px-3 py-2 text-[14px] font-medium transition ${
                   currentTopic === t.slug
-                    ? "bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100"
-                    : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/70"
+                    ? "border-blue-600 bg-blue-50 text-blue-800 shadow-sm dark:border-amber-500 dark:bg-amber-900/30 dark:text-amber-100"
+                    : "border-transparent text-gray-700 hover:border-blue-300 hover:bg-gray-50 dark:text-gray-300 dark:hover:border-amber-500/60 dark:hover:bg-gray-800/70"
                 }`}
               >
                 {t.title}
@@ -311,154 +318,235 @@ export default function DocsPage() {
           </nav>
         </aside>
 
-        {/* Content */}
-        <article className="prose max-w-none dark:prose-invert leading-relaxed prose-p:my-4 prose-li:my-1.5 prose-ul:space-y-1.5 prose-ol:space-y-1.5 prose-headings:mt-8 prose-headings:mb-3 prose-img:my-6 prose-table:my-6">
-          <ReactMarkdown
-            remarkPlugins={[remarkGfm]}
-            components={{
-              h1: Heading("h1"),
-              h2: Heading("h2"),
-              h3: Heading("h3"),
-              h4: Heading("h4"),
-              p({ children, ...rest }) {
-                return (
-                  <p className="whitespace-pre-line" {...rest}>
-                    {children}
-                  </p>
-                );
-              },
-              li({ children, ...rest }) {
-                return (
-                  <li className="whitespace-pre-line" {...rest}>
-                    {children}
-                  </li>
-                );
-              },
-              code({ inline, className, children, ...rest }: any) {
-                const text = Array.isArray(children)
-                  ? children.join("")
-                  : String(children);
-                if (inline) {
+        <main className="min-w-0">
+          <article className="max-w-4xl text-[15px] leading-[1.75] text-gray-800 antialiased dark:text-gray-100">
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              components={{
+                h1: Heading("h1"),
+                h2: Heading("h2"),
+                h3: Heading("h3"),
+                h4: Heading("h4"),
+                p({ children, ...rest }) {
                   return (
-                    <code
-                      className={`rounded-md bg-gray-100 px-1 py-0.5 dark:bg-gray-800 ${
-                        className || ""
-                      }`}
+                    <p className="my-4 text-[15px] leading-[1.75]" {...rest}>
+                      {children}
+                    </p>
+                  );
+                },
+                ul({ children, ...rest }) {
+                  return (
+                    <ul
+                      className="my-4 space-y-2 pl-6 text-[15px] leading-[1.7] marker:text-gray-500 dark:marker:text-gray-400 list-disc"
                       {...rest}
                     >
                       {children}
-                    </code>
+                    </ul>
                   );
-                }
-                return (
-                  <div className="not-prose relative">
-                    <pre className="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-800 dark:bg-gray-900 overflow-x-auto">
-                      <code className={className} {...rest}>
+                },
+                ol({ children, ...rest }) {
+                  return (
+                    <ol
+                      className="my-4 space-y-2 pl-6 text-[15px] leading-[1.7] marker:text-gray-500 dark:marker:text-gray-400 list-decimal"
+                      {...rest}
+                    >
+                      {children}
+                    </ol>
+                  );
+                },
+                li({ children, ...rest }) {
+                  return (
+                    <li className="pl-1 text-[15px] leading-[1.7]" {...rest}>
+                      {children}
+                    </li>
+                  );
+                },
+                blockquote({ children, ...rest }) {
+                  return (
+                    <blockquote
+                      className="my-6 border-l-4 border-blue-400 bg-blue-50/80 px-4 py-3 text-[15px] leading-[1.75] text-gray-900 italic shadow-sm dark:border-amber-500 dark:bg-amber-900/30 dark:text-gray-50"
+                      {...rest}
+                    >
+                      {children}
+                    </blockquote>
+                  );
+                },
+                hr() {
+                  return (
+                    <hr className="my-10 border-t border-gray-200 dark:border-gray-800" />
+                  );
+                },
+                code({ inline, className, children, ...rest }: any) {
+                  const text = Array.isArray(children)
+                    ? children.join("")
+                    : String(children);
+
+                  if (inline) {
+                    return (
+                      <code
+                        className={`rounded-sm bg-blue-50 px-1.5 py-0.5 text-[13px] font-medium text-blue-800 dark:bg-amber-900/50 dark:text-amber-100 ${
+                          className || ""
+                        }`}
+                        {...rest}
+                      >
                         {children}
                       </code>
-                    </pre>
-                    <button
-                      type="button"
-                      onClick={() => navigator.clipboard.writeText(text)}
-                      className="absolute top-2 right-2 rounded-md border border-gray-300 bg-white/80 px-2 py-1 text-xs text-gray-700 hover:bg-white dark:border-gray-700 dark:bg-gray-800/80 dark:text-gray-200"
-                    >
-                      Copy
-                    </button>
-                  </div>
-                );
-              },
-              table({ children }) {
-                return (
-                  <div className="not-prose overflow-x-auto">
-                    <table className="min-w-full border-collapse">
-                      {children}
-                    </table>
-                  </div>
-                );
-              },
-              img: ({ src, alt, title }: any) => (
-                <img
-                  src={src}
-                  alt={alt}
-                  title={title}
-                  loading="lazy"
-                  className="mx-auto rounded-lg shadow-md border border-gray-200 dark:border-gray-800"
-                  onClick={() => setPreviewSrc(src)}
-                />
-              ),
-              a: ({ href, children, ...aProps }: any) => {
-                const url = String(href || "");
-                const classes =
-                  "text-blue-600 underline underline-offset-2 hover:text-blue-700 dark:text-amber-400 dark:hover:text-amber-300";
-                if (/^https?:\/\//i.test(url)) {
+                    );
+                  }
+
                   return (
-                    <a
-                      href={url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={classes}
-                      {...aProps}
+                    <div className="not-prose relative my-6 overflow-hidden rounded-lg border border-gray-200 bg-gray-950 text-gray-100 shadow-sm dark:border-gray-700 dark:bg-gray-900">
+                      <pre className="overflow-x-auto px-4 py-4 text-[13px] leading-[1.65]">
+                        <code className={className} {...rest}>
+                          {children}
+                        </code>
+                      </pre>
+                      <button
+                        type="button"
+                        onClick={() => navigator.clipboard.writeText(text)}
+                        className="absolute right-3 top-3 inline-flex items-center rounded-md border border-gray-500/40 bg-gray-900/80 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.04em] text-gray-100 shadow-sm transition hover:border-blue-400 hover:text-blue-100 dark:hover:border-amber-400 dark:hover:text-amber-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:focus-visible:ring-amber-400"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                  );
+                },
+                table({ children }) {
+                  return (
+                    <div className="not-prose my-6 overflow-x-auto rounded-lg border border-gray-200 shadow-sm dark:border-gray-800">
+                      <table className="w-full border-collapse text-left text-[14px] leading-[1.6] text-gray-800 dark:text-gray-100">
+                        {children}
+                      </table>
+                    </div>
+                  );
+                },
+                thead({ children, ...rest }) {
+                  return (
+                    <thead className="bg-gray-50 dark:bg-gray-800" {...rest}>
+                      {children}
+                    </thead>
+                  );
+                },
+                tbody({ children, ...rest }) {
+                  return <tbody {...rest}>{children}</tbody>;
+                },
+                tr({ children, ...rest }) {
+                  return (
+                    <tr
+                      className="border-b border-gray-200 last:border-0 odd:bg-white even:bg-gray-50 dark:border-gray-800 dark:odd:bg-gray-900 dark:even:bg-gray-800/70"
+                      {...rest}
                     >
+                      {children}
+                    </tr>
+                  );
+                },
+                th({ children, ...rest }) {
+                  return (
+                    <th
+                      className="px-4 py-3 text-sm font-semibold text-gray-900 dark:text-gray-50"
+                      {...rest}
+                    >
+                      {children}
+                    </th>
+                  );
+                },
+                td({ children, ...rest }) {
+                  return (
+                    <td
+                      className="px-4 py-3 align-top text-sm text-gray-800 dark:text-gray-100"
+                      {...rest}
+                    >
+                      {children}
+                    </td>
+                  );
+                },
+                img: ({ src, alt, title }: any) => (
+                  <img
+                    src={src}
+                    alt={alt}
+                    title={title}
+                    loading="lazy"
+                    className="my-6 mx-auto rounded-lg border border-gray-200 shadow-md transition hover:shadow-lg dark:border-gray-700"
+                    onClick={() => setPreviewSrc(src)}
+                  />
+                ),
+                a: ({ href, children, ...aProps }: any) => {
+                  const url = String(href || "");
+                  const classes =
+                    "text-blue-600 underline decoration-[0.08em] underline-offset-[0.16em] transition hover:text-blue-700 dark:text-amber-300 dark:hover:text-amber-200";
+                  if (/^https?:\/\//i.test(url)) {
+                    return (
+                      <a
+                        href={url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={classes}
+                        {...aProps}
+                      >
+                        {children}
+                      </a>
+                    );
+                  }
+                  if (url.startsWith("./")) {
+                    const slug = url.replace(/^\.\//, "").replace(/\.md$/, "");
+                    const to = buildDocPath(slug);
+                    return (
+                      <Link to={to} className={classes} {...(aProps as any)}>
+                        {children}
+                      </Link>
+                    );
+                  }
+                  return (
+                    <a href={url} className={classes} {...aProps}>
                       {children}
                     </a>
                   );
-                }
-                if (url.startsWith("./")) {
-                  const slug = url.replace(/^\.\//, "").replace(/\.md$/, "");
-                  const to = buildDocPath(slug);
-                  return (
-                    <Link to={to} className={classes} {...(aProps as any)}>
-                      {children}
+                },
+              }}
+            >
+              {content}
+            </ReactMarkdown>
+            {(() => {
+              const idx = topics.findIndex((t) => t.slug === currentTopic);
+              const prev = idx > 0 ? topics[idx - 1] : null;
+              const next =
+                idx >= 0 && idx < topics.length - 1 ? topics[idx + 1] : null;
+              if (!prev && !next) return null;
+              return (
+                <div className="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-2 not-prose select-none">
+                  {prev && (
+                    <Link
+                      to={buildDocPath(prev.slug)}
+                      className="group inline-flex w-fit items-center gap-2 rounded-md border border-gray-200 bg-white px-4 py-3 text-sm font-semibold text-gray-700 shadow-sm transition hover:border-blue-400 hover:bg-blue-50 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-100 dark:hover:border-amber-500/60 dark:hover:bg-amber-900/30"
+                    >
+                      <span className="text-lg leading-none text-blue-600 dark:text-amber-300">
+                        ‹
+                      </span>
+                      {prev.title}
                     </Link>
-                  );
-                }
-                return (
-                  <a href={url} className={classes} {...aProps}>
-                    {children}
-                  </a>
-                );
-              },
-            }}
-          >
-            {content}
-          </ReactMarkdown>
-          {(() => {
-            const idx = topics.findIndex((t) => t.slug === currentTopic);
-            const prev = idx > 0 ? topics[idx - 1] : null;
-            const next =
-              idx >= 0 && idx < topics.length - 1 ? topics[idx + 1] : null;
-            if (!prev && !next) return null;
-            return (
-              <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-3 not-prose select-none">
-                {prev && (
-                  <Link
-                    to={buildDocPath(prev.slug)}
-                    className="group rounded-lg border border-gray-200 px-4 py-3 w-fit text-sm text-gray-700 hover:bg-gray-50 dark:border-gray-800 dark:text-gray-200 dark:hover:bg-gray-800"
-                  >
-                    {"< "}
-                    {prev.title}
-                  </Link>
-                )}
-                {next && (
-                  <Link
-                    to={buildDocPath(next.slug)}
-                    className="group justify-self-end rounded-lg border border-gray-200 px-4 py-3 w-fit text-sm text-gray-700 hover:bg-gray-50 dark:border-gray-800 dark:text-gray-200 dark:hover:bg-gray-800"
-                  >
-                    {next.title}
-                    {" >"}
-                  </Link>
-                )}
-              </div>
-            );
-          })()}
-        </article>
+                  )}
+                  {next && (
+                    <Link
+                      to={buildDocPath(next.slug)}
+                      className="group inline-flex w-fit items-center justify-self-end gap-2 rounded-md border border-gray-200 bg-white px-4 py-3 text-sm font-semibold text-gray-700 shadow-sm transition hover:border-blue-400 hover:bg-blue-50 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-100 dark:hover:border-amber-500/60 dark:hover:bg-amber-900/30"
+                    >
+                      {next.title}
+                      <span className="text-lg leading-none text-blue-600 dark:text-amber-300">
+                        ›
+                      </span>
+                    </Link>
+                  )}
+                </div>
+              );
+            })()}
+          </article>
+        </main>
 
-        {/* TOC */}
-        <aside className="hidden lg:block sticky self-start top-24 h-[calc(100vh-7rem)] overflow-y-auto pl-2 select-none">
-          <div className="text-xs uppercase tracking-wide text-gray-500 mb-3">
+        <aside className="sticky top-24 hidden h-[calc(100vh-7rem)] select-none overflow-y-auto pl-3 lg:block">
+          <div className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-gray-500 dark:text-gray-400">
             On this page
           </div>
-          <ul className="space-y-1">
+          <ul className="space-y-1.5 text-sm">
             {toc
               .filter((i) => i.level <= 3)
               .map((i, idx) => (
@@ -472,10 +560,10 @@ export default function DocsPage() {
                       e.preventDefault();
                       scrollToId(i.id);
                     }}
-                    className={`block rounded px-2 py-1 text-sm hover:bg-gray-100 dark:hover:bg-gray-800 ${
+                    className={`block rounded-md border-l-2 px-2 py-1 transition ${
                       activeId === i.id
-                        ? "text-amber-600 dark:text-amber-400"
-                        : "text-gray-700 dark:text-gray-300"
+                        ? "border-blue-600 bg-blue-50 text-blue-800 shadow-sm dark:border-amber-500 dark:bg-amber-900/30 dark:text-amber-100"
+                        : "border-transparent text-gray-700 hover:border-blue-300 hover:bg-gray-50 dark:text-gray-300 dark:hover:border-amber-500/60 dark:hover:bg-gray-800/60"
                     }`}
                   >
                     {i.text}
@@ -486,35 +574,36 @@ export default function DocsPage() {
         </aside>
       </div>
 
-      {/* Mobile drawer */}
       {open && (
         <div
-          className="fixed inset-0 z-[60] bg-black/40"
+          className="fixed inset-0 z-[60] bg-black/50"
           onClick={() => setOpen(false)}
         >
           <div
-            className="absolute left-0 top-0 h-full w-72 bg-white dark:bg-gray-900 p-4 shadow-xl"
+            className="absolute left-0 top-0 h-full w-72 bg-white p-4 shadow-xl dark:bg-gray-900"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="mb-3 flex items-center justify-between">
-              <div className="font-semibold">Docs</div>
+            <div className="mb-4 flex items-center justify-between">
+              <div className="text-base font-semibold text-gray-800 dark:text-gray-100">
+                Docs
+              </div>
               <button
                 onClick={() => setOpen(false)}
-                className="rounded-md border px-2 py-1 text-sm text-gray-700 dark:text-gray-200 dark:border-gray-700"
+                className="rounded-md border border-gray-200 px-2 py-1 text-sm font-medium text-gray-700 transition hover:border-blue-300 hover:bg-blue-50 dark:border-gray-700 dark:text-gray-100 dark:hover:border-amber-500/60 dark:hover:bg-amber-900/30"
               >
                 Close
               </button>
             </div>
-            <nav className="space-y-2">
+            <nav className="space-y-1.5">
               {topics.map((t) => (
                 <Link
                   key={t.slug}
                   to={buildDocPath(t.slug)}
                   onClick={() => setOpen(false)}
-                  className={`block rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                  className={`block rounded-md border-l-2 px-3 py-2 text-sm font-medium transition ${
                     currentTopic === t.slug
-                      ? "bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100"
-                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/70"
+                      ? "border-blue-600 bg-blue-50 text-blue-800 shadow-sm dark:border-amber-500 dark:bg-amber-900/30 dark:text-amber-100"
+                      : "border-transparent text-gray-700 hover:border-blue-300 hover:bg-gray-50 dark:text-gray-300 dark:hover:border-amber-500/60 dark:hover:bg-gray-800/70"
                   }`}
                 >
                   {t.title}

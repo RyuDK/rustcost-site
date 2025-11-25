@@ -39,7 +39,7 @@ export default function BlogPage() {
           <li key={p.slug}>
             <Link
               to={`${prefix}/blog/${p.slug}`}
-              className="text-blue-600 hover:underline"
+              className="text-blue-600 hover:underline dark:text-amber-400 dark:hover:text-amber-300"
             >
               {p.title}
             </Link>
