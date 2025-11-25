@@ -439,27 +439,36 @@ export default function LandingPage() {
         aria-labelledby={sectionHeadingIds.cta}
         tabIndex={-1}
       >
-        <div className="flex flex-col mx-auto max-w-4xl rounded-2xl justify-center bg-gray-900 p-6 text-white shadow-md dark:bg-gray-800 dark:text-white gap-3">
+        <div
+          className="flex flex-col mx-auto max-w-4xl rounded-2xl justify-center 
+    text-gray-800 dark:text-gray-100 
+    bg-gray-50 dark:bg-gray-800 
+    p-6 shadow-md gap-4"
+        >
           <div className="flex flex-col items-center justify-center gap-2">
             <h3 id={sectionHeadingIds.cta} className="text-2xl font-extrabold">
               {t("landing.cta.headline", {
                 defaultValue: "Understand and improve your costs",
               })}
             </h3>
-            <p className="text-gray-300 dark:text-gray-300">
+            <p className="text-gray-500 dark:text-gray-300 text-center">
               {t("landing.cta.sub", {
                 defaultValue:
                   "Install with Helm and get cost awareness in minutes.",
               })}
             </p>
           </div>
+
           <nav
             className="flex flex-col sm:flex-row items-center justify-center gap-2 select-none"
             aria-label={footerActionsLabel}
           >
             <a
-              href={`${prefix}/${"docs"}`}
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-4 py-2 text-gray-900 shadow hover:bg-gray-100 dark:bg-amber-400 dark:text-gray-900 dark:hover:bg-amber-300"
+              href={`${prefix}/docs`}
+              className="inline-flex items-center justify-center gap-2 rounded-full 
+          bg-white px-4 py-2 text-gray-900 shadow 
+          hover:bg-gray-100 
+          dark:bg-amber-400 dark:text-gray-900 dark:hover:bg-amber-300"
               tabIndex={0}
               aria-describedby={ctaDescriptionIds.footerDocs}
             >
@@ -468,11 +477,16 @@ export default function LandingPage() {
               </span>
               <ArrowRightIcon className="h-5 w-5" />
             </a>
+
             <a
               href="https://github.com/rustcost"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-white/30 px-4 py-2 text-white hover:bg-white/10 dark:border-white/30 dark:hover:bg-white/10"
+              className="inline-flex items-center justify-center gap-2 rounded-full 
+          border border-amber-400/50 
+          px-4 py-2 
+          bg-amber-300 text-gray-900 hover:bg-amber-400
+          dark:bg-white  dark:hover:bg-gray-200"
               tabIndex={0}
               aria-describedby={ctaDescriptionIds.footerGithub}
             >
@@ -481,6 +495,7 @@ export default function LandingPage() {
               </span>
             </a>
           </nav>
+
           <p id={ctaDescriptionIds.footerDocs} className="sr-only">
             {docsHelpText}
           </p>

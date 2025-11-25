@@ -6,8 +6,8 @@ import PageSEO from "@/shared/components/PageSEO";
 import CopyButton from "@/shared/components/CopyButton";
 import { buildLanguagePrefix } from "@/constants/language";
 import {
-  CORE_IMAGE_NAME,
-  DASHBOARD_IMAGE_NAME,
+  // CORE_IMAGE_NAME,
+  // DASHBOARD_IMAGE_NAME,
   CORE_REPOSITORY_URL,
   DASHBOARD_REPOSITORY_URL,
   DOWNLOAD_PRODUCTS,
@@ -60,6 +60,7 @@ export default function DownloadPage() {
     };
 
     void loadTags;
+    // Todo : 추후 다시 활성화
     // void loadTags();
 
     return () => {
@@ -105,7 +106,7 @@ export default function DownloadPage() {
           >
             Helm (Recommended)
           </button>
-          <button
+          {/* <button
             onClick={() => setTab("docker")}
             className={`flex-1 rounded-lg px-4 py-2 text-sm font-semibold transition-colors select-none ${
               tab === "docker"
@@ -114,48 +115,48 @@ export default function DownloadPage() {
             }`}
           >
             Docker Images
-          </button>
+          </button> */}
         </div>
 
-        {tab === "helm" ? (
-          <div className="p-4">
-            <p className="text-sm text-gray-600 dark:text-gray-300">
-              Install the chart into the{" "}
-              <code className="font-mono">rustcost</code> namespace:
-            </p>
-            <div className="relative mt-3 not-prose">
-              <pre className="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-800 dark:bg-gray-900 overflow-x-auto">
-                {HELM_INSTALL_COMMAND}
-              </pre>
-              <div className="absolute top-2 right-2">
-                <CopyButton text={HELM_INSTALL_COMMAND} />
-              </div>
-            </div>
-
-            <div className="mt-4 rounded-lg border border-amber-300/40 bg-amber-50/50 p-4 text-amber-800 dark:border-amber-300/20 dark:bg-amber-400/10 dark:text-amber-200">
-              The Helm chart provisions recommended RBAC. Ensure your cluster
-              has an SSD-backed StorageClass for persistent volumes; NFS/HDD is
-              not supported.
-            </div>
-
-            <div className="mt-6 text-sm text-gray-600 dark:text-gray-300">
-              Verify:
-              <pre className="mt-2 rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-800 dark:bg-gray-900 overflow-x-auto">
-                kubectl get pods -n rustcost kubectl get pvc -n rustcost
-              </pre>
-            </div>
-
-            <div className="mt-6 text-sm text-gray-600 dark:text-gray-300">
-              Continue to{" "}
-              <a
-                href={docsInstallHref}
-                className="text-blue-600 underline dark:text-amber-400"
-              >
-                Installation Docs
-              </a>
+        {/* {tab === "helm" ? ( */}
+        <div className="p-4">
+          <p className="text-sm text-gray-600 dark:text-gray-300">
+            Install the chart into the{" "}
+            <code className="font-mono">rustcost</code> namespace:
+          </p>
+          <div className="relative mt-3 not-prose">
+            <pre className="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-800 dark:bg-gray-900 overflow-x-auto">
+              {HELM_INSTALL_COMMAND}
+            </pre>
+            <div className="absolute top-2 right-2">
+              <CopyButton text={HELM_INSTALL_COMMAND} />
             </div>
           </div>
-        ) : (
+
+          <div className="mt-4 rounded-lg border border-amber-300/40 bg-amber-50/50 p-4 text-amber-800 dark:border-amber-300/20 dark:bg-amber-400/10 dark:text-amber-200">
+            The Helm chart provisions recommended RBAC. Ensure your cluster has
+            an SSD-backed StorageClass for persistent volumes; NFS/HDD is not
+            supported.
+          </div>
+
+          <div className="mt-6 text-sm text-gray-600 dark:text-gray-300">
+            Verify:
+            <pre className="mt-2 rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-800 dark:bg-gray-900 overflow-x-auto">
+              kubectl get pods -n rustcost kubectl get pvc -n rustcost
+            </pre>
+          </div>
+
+          <div className="mt-6 text-sm text-gray-600 dark:text-gray-300">
+            Continue to{" "}
+            <a
+              href={docsInstallHref}
+              className="text-blue-600 underline dark:text-amber-400"
+            >
+              Installation Docs
+            </a>
+          </div>
+        </div>
+        {/* ) : (
           <div className="p-4 space-y-5">
             <div>
               <h3 className="text-lg font-bold text-gray-900 dark:text-white">
@@ -241,7 +242,7 @@ export default function DownloadPage() {
               </p>
             </div>
           </div>
-        )}
+        )} */}
       </div>
 
       {/* Versions matrix */}
