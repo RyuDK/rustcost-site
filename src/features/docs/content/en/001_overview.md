@@ -40,7 +40,7 @@ but to serve as a **quiet, efficient companion** that helps operators _understan
 - [Official Website](https://rustcost.com) — Lightweight FinOps for Kubernetes
   _Monitor, analyze, and optimize your Kubernetes costs with RustCost — a modern, efficient open-source FinOps solution._
 
-- [GitHub Repository](https://github.com/rustcost/rustcost) —
+- [GitHub Repository](https://github.com/rustcost) —
   _Fast, secure Kubernetes cost insights powered by Rust._
 
 ---
@@ -123,4 +123,4 @@ Anyone can contribute — through code, documentation, design, or community effo
 - Alerting and external module integration templates
 - Documentation, localization, and tutorials
 
-[Contribute on GitHub →](https://github.com/rustcost/rustcost)
+[Contribute on GitHub →](https://github.com/rustcost)

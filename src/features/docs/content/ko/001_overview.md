@@ -35,7 +35,7 @@ Rust(Axum) 기반의 고성능 백엔드, React 기반의 직관적인 UI, 그�
 - [공식 사이트](https://rustcost.com) — Lightweight FinOps for Kubernetes
   _Monitor, analyze, and optimize your Kubernetes costs with RustCost — a modern, efficient open-source FinOps solution._
 
-- [GitHub 저장소](https://github.com/rustcost/rustcost) —
+- [GitHub 저장소](https://github.com/rustcost) —
   _Fast, secure Kubernetes cost insights powered by Rust._
 
 ---
@@ -119,4 +119,4 @@ RustCost는 **Apache License 2.0** 기반의 완전한 오픈소스 프로젝트
 - Alert 등 외부 모듈 연동 템플릿 제공
 - 문서화, 번역, 튜토리얼 작성
 
-[GitHub에서 기여하기 →](https://github.com/rustcost/rustcost)
+[GitHub에서 기여하기 →](https://github.com/rustcost)
